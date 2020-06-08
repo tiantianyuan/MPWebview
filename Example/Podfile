@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'MPWebview_Example' do
+  pod 'MPWebview', :path => '../'
+  pod 'SVGKit'
+  pod 'lottie-ios'
+
+  target 'MPWebview_Tests' do
+    inherit! :search_paths
+  end
+end
