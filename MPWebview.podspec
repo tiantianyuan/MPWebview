@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'MPWebview'
-  s.version          = '0.1.0'
+  s.version          = '0.0.3'
   s.summary          = 'A short description of MPWebview.'
 
 # This description is used to generate tags and improve search results.
@@ -30,13 +30,16 @@ TODO: Add long description of the pod here.
 
   s.ios.deployment_target = '9.0'
 
-  s.source_files = 'MPWebview/Classes/**/*'
+  s.source_files = 'MPWebview/Classes/MPWebview.swift'
   
-  # s.resource_bundles = {
-  #   'MPWebview' => ['MPWebview/Assets/*.png']
-  # }
+   s.resource_bundles = {
+     'MPWebview' => ['MPWebview/Assets/**/*']
+   }
+   s.swift_version = '4.0'
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
+   s.public_header_files = 'Pod/Classes/MPWebview.swift'
   # s.frameworks = 'UIKit', 'MapKit'
   # s.dependency 'AFNetworking', '~> 2.3'
+  s.dependency 'SVGKit'
+  s.dependency 'lottie-ios'
 end

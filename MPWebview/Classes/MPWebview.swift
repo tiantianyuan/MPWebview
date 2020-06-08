@@ -14,7 +14,7 @@ import Lottie
 let __SCREEN_WIDTH__  = UIScreen.main.bounds.size.width
 let __SCREEN_HEIGHT__ = UIScreen.main.bounds.size.height
 
-enum MPWebviewStyle {
+public enum MPWebviewStyle {
     case traditional //上面导航栏+下面tool
     case modern      //只有上面导航栏
     case concise     //只有右上方关闭按钮
@@ -22,7 +22,7 @@ enum MPWebviewStyle {
     case popup       //弹窗模式
 }
 
-class MPWebview: UIView {
+public class MPWebview: UIView {
     @IBOutlet var contentView:UIView!
     @IBOutlet var topBar:UIView!
     @IBOutlet var bottomBar:UIView!
@@ -43,23 +43,23 @@ class MPWebview: UIView {
     var activityActor:AnimationView!
     
     //title
-    var title:String = "" //native指定
-    var autoParseTitle:Bool = false //从网页获取title
+    public var title:String = "" //native指定
+    public var autoParseTitle:Bool = false //从网页获取title
     
     //白名单
-    var whiteList:Array<String> = []
+    public var whiteList:Array<String> = []
     
     //特殊URL处理映射
-    var specialUrlMaps:Dictionary<String,(String)->Bool> = [:]
+    public var specialUrlMaps:Dictionary<String,(String)->Bool> = [:]
     
     //javascript注册事件
-    var jsMaps:Dictionary<String,(WKScriptMessage)->()> = [:]
+    public var jsMaps:Dictionary<String,(WKScriptMessage)->()> = [:]
     
     //统计事件Maps
-    var trackEventsMaps:Dictionary<String,String> = [:]
+    public var trackEventsMaps:Dictionary<String,String> = [:]
     
     //webview关闭回调
-    var webviewCloseBlock:()->() = {}
+    public var webviewCloseBlock:()->() = {}
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -67,7 +67,7 @@ class MPWebview: UIView {
         self.addSubview(contentView)
     }
     
-    override func awakeFromNib() {
+    public override func awakeFromNib() {
         super.awakeFromNib()
         self.contentView.frame = self.bounds;
         
@@ -119,7 +119,7 @@ class MPWebview: UIView {
     }
     
 //    MARK:风格设置
-    func setStyle(style:MPWebviewStyle){
+    public func setStyle(style:MPWebviewStyle){
         switch style {
         case .traditional:
             topBar.isHidden = false
@@ -150,23 +150,23 @@ class MPWebview: UIView {
         }
     }
     
-    func setTintColor(color:UIColor){
+    public func setTintColor(color:UIColor){
         closeBtn.tintColor = color
         backwardBtn.tintColor = color
         forwardBtn.tintColor = color
         refreshBtn.tintColor = color
     }
     
-    func setTitleColor(color:UIColor){
+    public func setTitleColor(color:UIColor){
         titleLabel.textColor = color
     }
     
-    func setToolBarColor(color:UIColor){
+    public func setToolBarColor(color:UIColor){
         topBar.backgroundColor = color
         bottomBar.backgroundColor = color
     }
 //    MARK:添加Cookie
-    func setCookie(cookieProperties:Dictionary<HTTPCookiePropertyKey, Any>){
+    public func setCookie(cookieProperties:Dictionary<HTTPCookiePropertyKey, Any>){
         let cookie = HTTPCookie.init(properties: cookieProperties)
         if(cookie != nil){
             HTTPCookieStorage.shared.setCookie(cookie!)
@@ -174,7 +174,7 @@ class MPWebview: UIView {
     }
     
 //    MARK:删除Cookie
-    func deleteCookie(urlStr:String){
+    public func deleteCookie(urlStr:String){
         let url = URL(string: urlStr)
         guard url != nil else {
             return
@@ -189,7 +189,7 @@ class MPWebview: UIView {
     }
     
 //    MARK:删除所有Cookie
-    func deleteAllCookies(){
+    public func deleteAllCookies(){
         let cookies = HTTPCookieStorage.shared.cookies
         if(cookies != nil){
             for ck in cookies!{
@@ -199,7 +199,7 @@ class MPWebview: UIView {
     }
     
 //    MARK:修改User-Agent
-    func configUserAgent(userAgent:String){
+    public func configUserAgent(userAgent:String){
         webview.customUserAgent = userAgent
     }
     
@@ -227,7 +227,7 @@ class MPWebview: UIView {
 //    MARK:事件追踪
     
     //添加追踪事件
-    func addTrackEventsMaps(maps:Dictionary<String,String>){
+   public func addTrackEventsMaps(maps:Dictionary<String,String>){
         for (key,value) in maps{
             trackEventsMaps[key] = value
         }
@@ -237,7 +237,7 @@ class MPWebview: UIView {
         
     }
 //    MARK:加载URL
-    func loadUrl(urlStr:String){
+    public func loadUrl(urlStr:String){
         let url = URL(string: urlStr)
         guard url != nil else {
             return
@@ -251,17 +251,17 @@ class MPWebview: UIView {
     
     //注册特殊URL回调
     //@callback 回调函数，返回的Bool值作为是否打开网页的标识(true,打开网页,反之不打开)
-    func registerSpecialUrlCallback(url:String,callback:@escaping (String)->Bool){
+    public func registerSpecialUrlCallback(url:String,callback:@escaping (String)->Bool){
         specialUrlMaps[url] = callback
     }
     
     //取消特殊URL回调
-    func unregisterSpecialUrlCallback(url:String){
+    public func unregisterSpecialUrlCallback(url:String){
         specialUrlMaps.removeValue(forKey: url)
     }
     
 //    MARK:JavaScript交互
-    func excuteJavascript(javascript:String,completion:@escaping (Any?,Error?)->()){
+    public func excuteJavascript(javascript:String,completion:@escaping (Any?,Error?)->()){
         webview.evaluateJavaScript(javascript) { (result, error) in
             if(error == nil){
                 completion(result,error)
@@ -272,13 +272,13 @@ class MPWebview: UIView {
     }
     
     //注册javascript回调事件
-    func registerJavascriptCallback(name:String,callback:@escaping (WKScriptMessage)->()){
+    public func registerJavascriptCallback(name:String,callback:@escaping (WKScriptMessage)->()){
         jsMaps[name] = callback
         webview.configuration.userContentController.add(self, name: name)
     }
     
     //取消已注册事件
-    func unregisterJavascriptCallback(name:String){
+    public func unregisterJavascriptCallback(name:String){
         jsMaps.removeValue(forKey: name)
         webview.configuration.userContentController.removeScriptMessageHandler(forName: name)
     }
@@ -334,7 +334,7 @@ extension MPWebview:WKUIDelegate{
 
 //MARK:JavaScript回调
 extension MPWebview:WKScriptMessageHandler{
-    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage){
+    public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage){
         let messageName = message.name
         let callback = jsMaps[messageName]
         
