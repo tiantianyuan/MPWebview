@@ -10,9 +10,16 @@ import UIKit
 import WebKit
 import SVGKit
 import Lottie
+import Masonry
 
 let __SCREEN_WIDTH__  = UIScreen.main.bounds.size.width
 let __SCREEN_HEIGHT__ = UIScreen.main.bounds.size.height
+func isiPhoneXScreen() -> Bool {
+        guard #available(iOS 11.0, *) else {
+            return false
+        }
+    return UIApplication.shared.windows[0].safeAreaInsets.bottom != 0
+}
 
 public enum MPWebviewStyle {
     case traditional //上面导航栏+下面tool
@@ -23,24 +30,24 @@ public enum MPWebviewStyle {
 }
 
 public class MPWebview: UIView {
-    @IBOutlet var contentView:UIView!
-    @IBOutlet var topBar:UIView!
-    @IBOutlet var bottomBar:UIView!
-    @IBOutlet var webContent:UIView!
-    @IBOutlet var topHeightConstraint:NSLayoutConstraint!
-    @IBOutlet var bottomHeightConstraint:NSLayoutConstraint!
+    var contentView:UIView!
+    var topBar:UIView!
+    var bottomBar:UIView!
+    var webContent:UIView!
+    var topHeightConstraint:NSLayoutConstraint!
+    var bottomHeightConstraint:NSLayoutConstraint!
     
     var webview:WKWebView!
     
     //控件
-    @IBOutlet var forwardBtn:UIButton!
-    @IBOutlet var backwardBtn:UIButton!
-    @IBOutlet var closeBtn:UIButton!
-    @IBOutlet var refreshBtn:UIButton!
-    @IBOutlet var titleLabel:UILabel!
+    var forwardBtn:UIButton!
+    var backwardBtn:UIButton!
+    var closeBtn:UIButton!
+    var refreshBtn:UIButton!
+    var titleLabel:UILabel!
     
     //Loading控件
-    var activityActor:AnimationView!
+    public var activityActor:AnimationView!
     
     //title
     public var title:String = "" //native指定
@@ -61,29 +68,143 @@ public class MPWebview: UIView {
     //webview关闭回调
     public var webviewCloseBlock:()->() = {}
     
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+        NSLog("init frame")
+        self.config()
+    }
+    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        Bundle.main.loadNibNamed("MPWebview", owner: self, options: nil)
+    }
+    
+    func initView(frame:CGRect){
+        contentView = UIView(frame: CGRect(x: 0, y: 0, width: frame.width, height: frame.height))
         self.addSubview(contentView)
+        contentView.mas_makeConstraints { (make) in
+            make?.top.equalTo()(0)
+            make?.bottom.equalTo()(0)
+            make?.leading.equalTo()(0)
+            make?.trailing.equalTo()(0)
+        }
+        
+        topBar = UIView(frame: CGRect(x: 0, y: 0, width: contentView.frame.width, height: 86))
+        contentView.addSubview(topBar)
+        topBar.mas_makeConstraints { (make) in
+            make?.top.mas_equalTo()(0)
+            make?.leading.mas_equalTo()(0)
+            make?.trailing.mas_equalTo()(0)
+            if(isiPhoneXScreen()){
+                make?.height.mas_equalTo()(86)
+            }else{
+                make?.height.mas_equalTo()(64)
+            }
+        }
+        
+        bottomBar = UIView(frame: CGRect(x: 0, y: 0, width: contentView.frame.width, height: 44))
+        contentView.addSubview(bottomBar)
+        bottomBar.mas_makeConstraints { (make) in
+            make?.bottom.equalTo()(superview?.mas_bottom)
+            if(isiPhoneXScreen()){
+                make?.height.mas_equalTo()(78)
+            }else{
+                make?.height.mas_equalTo()(44)
+            }
+            
+            make?.leading.mas_equalTo()(0)
+            make?.trailing.mas_equalTo()(0)
+        }
+        
+        webContent = UIView(frame: CGRect(x: 0, y: topBar.frame.maxY, width: contentView.frame.width, height: 0))
+        contentView.addSubview(webContent)
+        webContent.mas_makeConstraints { (make) in
+            make?.top.equalTo()(topBar.mas_bottom)
+            make?.leading.mas_equalTo()(0)
+            make?.trailing.mas_equalTo()(0)
+            make?.bottom.equalTo()(bottomBar.mas_top)
+            
+        }
+        
+        forwardBtn = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+        bottomBar.addSubview(forwardBtn)
+        forwardBtn.mas_makeConstraints { (make) in
+            make?.leading.mas_equalTo()(100)
+            make?.top.mas_equalTo()(5)
+            make?.width.mas_equalTo()(40)
+            make?.height.mas_equalTo()(40)
+        }
+        
+        backwardBtn = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+        bottomBar.addSubview(backwardBtn)
+        backwardBtn.mas_makeConstraints { (make) in
+            make?.leading.mas_equalTo()(20)
+            make?.top.mas_equalTo()(5)
+            make?.width.mas_equalTo()(40)
+            make?.height.mas_equalTo()(40)
+        }
+        
+        closeBtn = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+        topBar.addSubview(closeBtn)
+        closeBtn.mas_makeConstraints { (make) in
+            make?.leading.mas_equalTo()(10)
+            make?.bottom.mas_equalTo()(-5)
+            make?.width.mas_equalTo()(40)
+            make?.height.mas_equalTo()(40)
+        }
+        
+        refreshBtn = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+        topBar.addSubview(refreshBtn)
+        refreshBtn.mas_makeConstraints { (make) in
+            make?.trailing.mas_equalTo()(-10)
+            make?.bottom.mas_equalTo()(-5)
+            make?.width.mas_equalTo()(40)
+            make?.height.mas_equalTo()(40)
+        }
+        
+        titleLabel = UILabel(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        topBar.addSubview(titleLabel)
+        titleLabel.mas_makeConstraints { (make) in
+            make?.centerX.equalTo()(superview?.mas_centerX)
+            make?.bottom.mas_equalTo()(-15)
+            make?.leading.mas_greaterThanOrEqualTo()(60)
+            make?.trailing.mas_lessThanOrEqualTo()(-60)
+        }
     }
     
     public override func awakeFromNib() {
         super.awakeFromNib()
+        NSLog("awake from nib")
+        self.config()
+    }
+    
+    func currentBundle()->Bundle{
+        let bundle = Bundle.init(for: type(of: self))
+        let path = bundle.path(forResource: "MPWebview", ofType: "bundle")
+        let resource = path != nil ? Bundle.init(path: path!) : Bundle.main
+        return resource!
+    }
+    
+    func config(){
+        self.initView(frame: self.frame)
         self.contentView.frame = self.bounds;
         
         titleLabel.text = title
         
-        forwardBtn.setImage(SVGKImage.init(named: "chevron-right.svg").uiImage, for: .normal)
+        forwardBtn.setImage(SVGKImage.init(named: "chevron-right.svg", in: self.currentBundle()).uiImage, for: .normal)
         forwardBtn.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        forwardBtn.addTarget(self, action: #selector(clickForward(sender:)), for: .touchUpInside)
         
-        backwardBtn.setImage(SVGKImage.init(named: "chevron-left.svg").uiImage, for: .normal)
+        backwardBtn.setImage(SVGKImage.init(named: "chevron-left.svg", in: self.currentBundle()).uiImage, for: .normal)
         backwardBtn.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        backwardBtn.addTarget(self, action: #selector(clickGoback(sender:)), for: .touchUpInside)
         
-        closeBtn.setImage(SVGKImage.init(named: "x.svg").uiImage, for: .normal)
+        closeBtn.setImage(SVGKImage.init(named: "x.svg", in: self.currentBundle()).uiImage, for: .normal)
         closeBtn.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        closeBtn.addTarget(self, action: #selector(clickClose(sender:)), for: .touchUpInside)
         
-        refreshBtn.setImage(SVGKImage.init(named: "rotate-right.svg").uiImage, for: .normal)
+        refreshBtn.setImage(SVGKImage.init(named: "rotate-right.svg", in: self.currentBundle()).uiImage, for: .normal)
         refreshBtn.imageEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+        refreshBtn.addTarget(self, action: #selector(clickRefresh(sender:)), for: .touchUpInside)
         
         closeBtn.tintColor = UIColor.black
         backwardBtn.tintColor = UIColor.black
@@ -93,6 +214,8 @@ public class MPWebview: UIView {
         self.createAnimatorView()
         
         self.initWebview()
+        
+        self.updateConstraints()
     }
     
     func initWebview(){
@@ -104,11 +227,18 @@ public class MPWebview: UIView {
         webview = WKWebView.init(frame: webContent.bounds, configuration: configuration)
         webview.navigationDelegate = self
         webContent.addSubview(webview)
+        
+        webview.mas_makeConstraints { (make) in
+            make?.top.equalTo()(0)
+            make?.bottom.equalTo()(0)
+            make?.leading.equalTo()(0)
+            make?.trailing.equalTo()(0)
+        }
     }
     
 //    MARK:创建风火轮
     func createAnimatorView(){
-        let animation = Animation.named("activityActor", bundle: Bundle.main, subdirectory: nil, animationCache: nil)
+        let animation = Animation.named("activityActor", bundle: self.currentBundle(), subdirectory: nil, animationCache: nil)
         activityActor = AnimationView(animation: animation)
         activityActor.contentMode = .scaleAspectFill
         activityActor.loopMode = .loop
@@ -204,30 +334,30 @@ public class MPWebview: UIView {
     }
     
 //    MARK:控件事件
-    @IBAction func clickGoback(sender:UIButton){
+    @objc func clickGoback(sender:UIButton){
         if(webview.canGoBack){
             webview.goBack()
         }
     }
     
-    @IBAction func clickForward(sender:UIButton){
+    @objc func clickForward(sender:UIButton){
         if(webview.canGoForward){
             webview.goForward()
         }
     }
     
-    @IBAction func clickClose(sender:UIButton){
+    @objc func clickClose(sender:UIButton){
         
     }
     
-    @IBAction func clickRefresh(sender:UIButton){
+    @objc func clickRefresh(sender:UIButton){
         webview.reload()
     }
     
 //    MARK:事件追踪
     
     //添加追踪事件
-   public func addTrackEventsMaps(maps:Dictionary<String,String>){
+    public func addTrackEventsMaps(maps:Dictionary<String,String>){
         for (key,value) in maps{
             trackEventsMaps[key] = value
         }
@@ -286,7 +416,7 @@ public class MPWebview: UIView {
 
 //MARK:WKWebview回调
 extension MPWebview:WKNavigationDelegate{
-    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void){
+    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void){
         let urlStr = navigationAction.request.url?.absoluteString
         
         //处理统计事件
@@ -310,12 +440,12 @@ extension MPWebview:WKNavigationDelegate{
         decisionHandler(.allow)
     }
     
-    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!){
+    public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!){
         activityActor.play()
         activityActor.isHidden = false
     }
     
-    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!){
+    public func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!){
         activityActor.stop()
         activityActor.isHidden = true
         if(autoParseTitle){
@@ -327,7 +457,7 @@ extension MPWebview:WKNavigationDelegate{
 }
 
 extension MPWebview:WKUIDelegate{
-    func webViewDidClose(_ webView: WKWebView){
+    public func webViewDidClose(_ webView: WKWebView){
         webviewCloseBlock()
     }
 }

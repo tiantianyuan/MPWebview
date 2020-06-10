@@ -30,16 +30,17 @@ TODO: Add long description of the pod here.
 
   s.ios.deployment_target = '9.0'
 
-  s.source_files = 'MPWebview/Classes/MPWebview.swift'
+  s.source_files = 'MPWebview/Classes/*'
   
    s.resource_bundles = {
-     'MPWebview' => ['MPWebview/Assets/**/*']
+     'MPWebview' => ['MPWebview/Assets/*']
    }
    s.swift_version = '4.0'
 
-   s.public_header_files = 'Pod/Classes/MPWebview.swift'
+#   s.public_header_files = 'Pod/Classes/MPWebview.swift'
   # s.frameworks = 'UIKit', 'MapKit'
   # s.dependency 'AFNetworking', '~> 2.3'
   s.dependency 'SVGKit'
   s.dependency 'lottie-ios'
+  s.dependency 'Masonry'
 end
