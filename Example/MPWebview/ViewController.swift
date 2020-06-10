@@ -15,7 +15,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 //        self.addSubview(contentView)
         // Do any additional setup after loading the view, typically from a nib.
-        webview.setStyle(style: .traditional)
+        webview.setStyle(style: .popup)
         webview.setTintColor(color: UIColor.blue)
         webview.registerJavascriptCallback(name: "firebaseMessage") { (msg) in
         }

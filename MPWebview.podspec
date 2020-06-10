@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
   s.name             = 'MPWebview'
   s.version          = '0.0.3'
-  s.summary          = 'A short description of MPWebview.'
+  s.summary          = 'A WKWebview (using Swift 4.0) that allows users to set cookies,set user-agent,jascript interaction,UI Style and so on.'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -18,14 +18,14 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+"A WKWebview (using Swift 4.0) that allows users to set cookies,set user-agent,jascript interaction,UI Style and so on."
                        DESC
 
-  s.homepage         = 'https://github.com/tian@marcopolos.co.jp/MPWebview'
+  s.homepage         = 'https://github.com/tiantianyuan/MPWebview'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'tian@marcopolos.co.jp' => 'lintong@withease.cn' }
-  s.source           = { :git => 'https://github.com/tian@marcopolos.co.jp/MPWebview.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/tiantianyuan/MPWebview.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '9.0'

@@ -258,24 +258,63 @@ public class MPWebview: UIView {
         case .modern:
             topBar.isHidden = false
             bottomBar.isHidden = true
-            bottomHeightConstraint.constant = 0
+            bottomBar.mas_remakeConstraints { (make) in
+                make?.bottom.equalTo()(superview?.mas_bottom)
+                make?.height.mas_equalTo()(0)
+                make?.leading.mas_equalTo()(0)
+                make?.trailing.mas_equalTo()(0)
+            }
+            self.updateConstraints()
             break
         case .concise:
             topBar.isHidden = false
             bottomBar.isHidden = true
             refreshBtn.isHidden = true
-            bottomHeightConstraint.constant = 0
+            bottomBar.mas_remakeConstraints { (make) in
+                make?.bottom.equalTo()(superview?.mas_bottom)
+                make?.height.mas_equalTo()(0)
+                make?.leading.mas_equalTo()(0)
+                make?.trailing.mas_equalTo()(0)
+            }
+            self.updateConstraints()
             break
         case .fullScreen:
             topBar.isHidden = true
             bottomBar.isHidden = true
             
-            topHeightConstraint.constant = 0
-            bottomHeightConstraint.constant = 0
+            topBar.mas_remakeConstraints { (make) in
+                make?.top.mas_equalTo()(0)
+                make?.leading.mas_equalTo()(0)
+                make?.trailing.mas_equalTo()(0)
+                make?.height.mas_equalTo()(0)
+            }
+
+            bottomBar.mas_remakeConstraints { (make) in
+                make?.bottom.equalTo()(superview?.mas_bottom)
+                make?.height.mas_equalTo()(0)
+                make?.leading.mas_equalTo()(0)
+                make?.trailing.mas_equalTo()(0)
+            }
+            self.updateConstraints()
             break
         case .popup:
-            topBar.isHidden = true
+            topBar.isHidden = false
             bottomBar.isHidden = true
+            refreshBtn.isHidden = true
+            bottomBar.mas_remakeConstraints { (make) in
+                make?.bottom.equalTo()(superview?.mas_bottom)
+                make?.height.mas_equalTo()(0)
+                make?.leading.mas_equalTo()(0)
+                make?.trailing.mas_equalTo()(0)
+            }
+            
+            closeBtn.mas_remakeConstraints { (make) in
+                make?.trailing.mas_equalTo()(-10)
+                make?.bottom.mas_equalTo()(-5)
+                make?.width.mas_equalTo()(40)
+                make?.height.mas_equalTo()(40)
+            }
+            self.updateConstraints()
             break
         }
     }
