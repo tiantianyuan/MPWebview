@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MPWebview" customModule="MPWebview" customModuleProvider="target">
+            <connections>
+                <outlet property="bottomBar" destination="T1x-Lt-Xka" id="QNO-gl-JqX"/>
+                <outlet property="bottomHeightConstraint" destination="gjq-Il-udZ" id="gcK-7r-Rxj"/>
+                <outlet property="contentView" destination="iN0-l3-epB" id="2u3-6Q-wWY"/>
+                <outlet property="topBar" destination="ky9-aW-xYV" id="omP-Mh-qO8"/>
+                <outlet property="topHeightConstraint" destination="Hj7-Js-A67" id="Q4I-34-fd2"/>
+                <outlet property="webContent" destination="F7p-cS-ArU" id="1ed-aK-Qid"/>
+                <outlet property="webview" destination="zQO-x9-xt8" id="U9v-q4-jaA"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ky9-aW-xYV">
+                    <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="44" id="Hj7-Js-A67"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="T1x-Lt-Xka">
+                    <rect key="frame" x="0.0" y="818" width="414" height="44"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="44" id="gjq-Il-udZ"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="F7p-cS-ArU">
+                    <rect key="frame" x="0.0" y="88" width="414" height="730"/>
+                    <subviews>
+                        <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zQO-x9-xt8">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="730"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <wkWebViewConfiguration key="configuration">
+                                <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
+                                <wkPreferences key="preferences"/>
+                            </wkWebViewConfiguration>
+                        </wkWebView>
+                    </subviews>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstItem="zQO-x9-xt8" firstAttribute="top" secondItem="F7p-cS-ArU" secondAttribute="top" id="8KJ-Rb-auZ"/>
+                        <constraint firstAttribute="bottom" secondItem="zQO-x9-xt8" secondAttribute="bottom" id="uCQ-34-W7x"/>
+                        <constraint firstItem="zQO-x9-xt8" firstAttribute="leading" secondItem="F7p-cS-ArU" secondAttribute="leading" id="wkg-k6-94B"/>
+                        <constraint firstAttribute="trailing" secondItem="zQO-x9-xt8" secondAttribute="trailing" id="zxs-uE-hkT"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="T1x-Lt-Xka" secondAttribute="trailing" id="1fW-5c-WJs"/>
+                <constraint firstItem="T1x-Lt-Xka" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="22s-dN-J09"/>
+                <constraint firstItem="ky9-aW-xYV" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="3S4-fK-VVB"/>
+                <constraint firstItem="F7p-cS-ArU" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="6qJ-2t-0Bn"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="T1x-Lt-Xka" secondAttribute="bottom" id="8Uk-GP-tHw"/>
+                <constraint firstItem="T1x-Lt-Xka" firstAttribute="top" secondItem="F7p-cS-ArU" secondAttribute="bottom" id="9yL-S2-z0O"/>
+                <constraint firstItem="ky9-aW-xYV" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="Cbd-UG-mgy"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="ky9-aW-xYV" secondAttribute="trailing" id="Lb4-9i-nXC"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="F7p-cS-ArU" secondAttribute="trailing" id="MHO-x2-Eiy"/>
+                <constraint firstItem="F7p-cS-ArU" firstAttribute="top" secondItem="ky9-aW-xYV" secondAttribute="bottom" id="O7K-gI-5ul"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="-217" y="46"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

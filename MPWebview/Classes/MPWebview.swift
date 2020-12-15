@@ -30,14 +30,14 @@ public enum MPWebviewStyle {
 }
 
 public class MPWebview: UIView {
-    var contentView:UIView!
-    var topBar:UIView!
-    var bottomBar:UIView!
-    var webContent:UIView!
-    var topHeightConstraint:NSLayoutConstraint!
-    var bottomHeightConstraint:NSLayoutConstraint!
+    @IBOutlet var contentView:UIView!
+    @IBOutlet var topBar:UIView!
+    @IBOutlet var bottomBar:UIView!
+    @IBOutlet var webContent:UIView!
+    @IBOutlet var topHeightConstraint:NSLayoutConstraint!
+    @IBOutlet var bottomHeightConstraint:NSLayoutConstraint!
     
-    var webview:WKWebView!
+    @IBOutlet var webview:WKWebView!
     
     //控件
     var forwardBtn:UIButton!
@@ -47,84 +47,42 @@ public class MPWebview: UIView {
     var titleLabel:UILabel!
     
     //Loading控件
-    public var activityActor:AnimationView!
+    var activityActor:AnimationView!
     
     //title
-    public var title:String = "" //native指定
-    public var autoParseTitle:Bool = false //从网页获取title
+    var title:String = "" //native指定
+    var autoParseTitle:Bool = false //从网页获取title
     
     //白名单
-    public var whiteList:Array<String> = []
+    var whiteList:Array<String> = []
     
     //特殊URL处理映射
-    public var specialUrlMaps:Dictionary<String,(String)->Bool> = [:]
+    var specialUrlMaps:Dictionary<String,(String)->Bool> = [:]
     
     //javascript注册事件
-    public var jsMaps:Dictionary<String,(WKScriptMessage)->()> = [:]
+    var jsMaps:Dictionary<String,(WKScriptMessage)->()> = [:]
     
     //统计事件Maps
-    public var trackEventsMaps:Dictionary<String,String> = [:]
+    var trackEventsMaps:Dictionary<String,String> = [:]
     
     //webview关闭回调
-    public var webviewCloseBlock:()->() = {}
-    
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
-        NSLog("init frame")
-        self.config()
-    }
+    var webviewCloseBlock:()->() = {}
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        Bundle.main.loadNibNamed("MPWebview", owner: self, options: nil)
+        self.contentView.frame = self.bounds
+        self.addSubview(self.contentView)
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        Bundle.main.loadNibNamed("MPWebview", owner: self, options: nil)
+        self.contentView.frame = self.bounds
+        self.addSubview(self.contentView)
     }
     
     func initView(frame:CGRect){
-        contentView = UIView(frame: CGRect(x: 0, y: 0, width: frame.width, height: frame.height))
-        self.addSubview(contentView)
-        contentView.mas_makeConstraints { (make) in
-            make?.top.equalTo()(0)
-            make?.bottom.equalTo()(0)
-            make?.leading.equalTo()(0)
-            make?.trailing.equalTo()(0)
-        }
-        
-        topBar = UIView(frame: CGRect(x: 0, y: 0, width: contentView.frame.width, height: 86))
-        contentView.addSubview(topBar)
-        topBar.mas_makeConstraints { (make) in
-            make?.top.mas_equalTo()(0)
-            make?.leading.mas_equalTo()(0)
-            make?.trailing.mas_equalTo()(0)
-            if(isiPhoneXScreen()){
-                make?.height.mas_equalTo()(86)
-            }else{
-                make?.height.mas_equalTo()(64)
-            }
-        }
-        
-        bottomBar = UIView(frame: CGRect(x: 0, y: 0, width: contentView.frame.width, height: 44))
-        contentView.addSubview(bottomBar)
-        bottomBar.mas_makeConstraints { (make) in
-            make?.bottom.equalTo()(superview?.mas_bottom)
-            if(isiPhoneXScreen()){
-                make?.height.mas_equalTo()(78)
-            }else{
-                make?.height.mas_equalTo()(44)
-            }
-            
-            make?.leading.mas_equalTo()(0)
-            make?.trailing.mas_equalTo()(0)
-        }
-        
-        webContent = UIView(frame: CGRect(x: 0, y: topBar.frame.maxY, width: contentView.frame.width, height: 0))
-        contentView.addSubview(webContent)
-        webContent.mas_makeConstraints { (make) in
-            make?.top.equalTo()(topBar.mas_bottom)
-            make?.leading.mas_equalTo()(0)
-            make?.trailing.mas_equalTo()(0)
-            make?.bottom.equalTo()(bottomBar.mas_top)
-            
-        }
-        
         forwardBtn = UIButton(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
         bottomBar.addSubview(forwardBtn)
         forwardBtn.mas_makeConstraints { (make) in
@@ -173,36 +131,24 @@ public class MPWebview: UIView {
     
     public override func awakeFromNib() {
         super.awakeFromNib()
-        NSLog("awake from nib")
-        self.config()
-    }
-    
-    func currentBundle()->Bundle{
-        let bundle = Bundle.init(for: type(of: self))
-        let path = bundle.path(forResource: "MPWebview", ofType: "bundle")
-        let resource = path != nil ? Bundle.init(path: path!) : Bundle.main
-        return resource!
-    }
-    
-    func config(){
         self.initView(frame: self.frame)
         self.contentView.frame = self.bounds;
         
         titleLabel.text = title
         
-        forwardBtn.setImage(SVGKImage.init(named: "chevron-right.svg", in: self.currentBundle()).uiImage, for: .normal)
+        forwardBtn.setImage(SVGKImage.init(named: "chevron-right.svg").uiImage, for: .normal)
         forwardBtn.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
         forwardBtn.addTarget(self, action: #selector(clickForward(sender:)), for: .touchUpInside)
         
-        backwardBtn.setImage(SVGKImage.init(named: "chevron-left.svg", in: self.currentBundle()).uiImage, for: .normal)
+        backwardBtn.setImage(SVGKImage.init(named: "chevron-left.svg").uiImage, for: .normal)
         backwardBtn.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
         backwardBtn.addTarget(self, action: #selector(clickGoback(sender:)), for: .touchUpInside)
         
-        closeBtn.setImage(SVGKImage.init(named: "x.svg", in: self.currentBundle()).uiImage, for: .normal)
+        closeBtn.setImage(SVGKImage.init(named: "x.svg").uiImage, for: .normal)
         closeBtn.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
         closeBtn.addTarget(self, action: #selector(clickClose(sender:)), for: .touchUpInside)
         
-        refreshBtn.setImage(SVGKImage.init(named: "rotate-right.svg", in: self.currentBundle()).uiImage, for: .normal)
+        refreshBtn.setImage(SVGKImage.init(named: "rotate-right.svg").uiImage, for: .normal)
         refreshBtn.imageEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
         refreshBtn.addTarget(self, action: #selector(clickRefresh(sender:)), for: .touchUpInside)
         
@@ -223,22 +169,14 @@ public class MPWebview: UIView {
         let userController = WKUserContentController();
 
         configuration.userContentController = userController;
+
         
-        webview = WKWebView.init(frame: webContent.bounds, configuration: configuration)
         webview.navigationDelegate = self
-        webContent.addSubview(webview)
-        
-        webview.mas_makeConstraints { (make) in
-            make?.top.equalTo()(0)
-            make?.bottom.equalTo()(0)
-            make?.leading.equalTo()(0)
-            make?.trailing.equalTo()(0)
-        }
     }
     
 //    MARK:创建风火轮
     func createAnimatorView(){
-        let animation = Animation.named("activityActor", bundle: self.currentBundle(), subdirectory: nil, animationCache: nil)
+        let animation = Animation.named("activityActor", bundle: Bundle.main, subdirectory: nil, animationCache: nil)
         activityActor = AnimationView(animation: animation)
         activityActor.contentMode = .scaleAspectFill
         activityActor.loopMode = .loop
@@ -258,63 +196,24 @@ public class MPWebview: UIView {
         case .modern:
             topBar.isHidden = false
             bottomBar.isHidden = true
-            bottomBar.mas_remakeConstraints { (make) in
-                make?.bottom.equalTo()(superview?.mas_bottom)
-                make?.height.mas_equalTo()(0)
-                make?.leading.mas_equalTo()(0)
-                make?.trailing.mas_equalTo()(0)
-            }
-            self.updateConstraints()
+            bottomHeightConstraint.constant = 0
             break
         case .concise:
             topBar.isHidden = false
             bottomBar.isHidden = true
             refreshBtn.isHidden = true
-            bottomBar.mas_remakeConstraints { (make) in
-                make?.bottom.equalTo()(superview?.mas_bottom)
-                make?.height.mas_equalTo()(0)
-                make?.leading.mas_equalTo()(0)
-                make?.trailing.mas_equalTo()(0)
-            }
-            self.updateConstraints()
+            bottomHeightConstraint.constant = 0
             break
         case .fullScreen:
             topBar.isHidden = true
             bottomBar.isHidden = true
             
-            topBar.mas_remakeConstraints { (make) in
-                make?.top.mas_equalTo()(0)
-                make?.leading.mas_equalTo()(0)
-                make?.trailing.mas_equalTo()(0)
-                make?.height.mas_equalTo()(0)
-            }
-
-            bottomBar.mas_remakeConstraints { (make) in
-                make?.bottom.equalTo()(superview?.mas_bottom)
-                make?.height.mas_equalTo()(0)
-                make?.leading.mas_equalTo()(0)
-                make?.trailing.mas_equalTo()(0)
-            }
-            self.updateConstraints()
+            topHeightConstraint.constant = 0
+            bottomHeightConstraint.constant = 0
             break
         case .popup:
-            topBar.isHidden = false
+            topBar.isHidden = true
             bottomBar.isHidden = true
-            refreshBtn.isHidden = true
-            bottomBar.mas_remakeConstraints { (make) in
-                make?.bottom.equalTo()(superview?.mas_bottom)
-                make?.height.mas_equalTo()(0)
-                make?.leading.mas_equalTo()(0)
-                make?.trailing.mas_equalTo()(0)
-            }
-            
-            closeBtn.mas_remakeConstraints { (make) in
-                make?.trailing.mas_equalTo()(-10)
-                make?.bottom.mas_equalTo()(-5)
-                make?.width.mas_equalTo()(40)
-                make?.height.mas_equalTo()(40)
-            }
-            self.updateConstraints()
             break
         }
     }

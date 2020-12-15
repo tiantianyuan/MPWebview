@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'MPWebview'
-  s.version          = '0.0.3'
+  s.version          = '0.0.5'
   s.summary          = 'A WKWebview (using Swift 4.0) that allows users to set cookies,set user-agent,jascript interaction,UI Style and so on.'
 
 # This description is used to generate tags and improve search results.
